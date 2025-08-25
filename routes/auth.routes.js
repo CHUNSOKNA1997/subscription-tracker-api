@@ -1,23 +1,12 @@
 import { Router } from "express";
+import { signIn, signOut, signUp } from "../controllers/auth.controller.js";
 
 const authRouter = Router();
 
-authRouter.post("/v1/auth/signup", (req, res) => {
-	res.json({
-		message: "This is a signup API",
-	});
-});
+authRouter.post("/v1/auth/signup", signUp);
 
-authRouter.post("/v1/auth/signin", (req, res) => {
-	res.json({
-		message: "This is a signin API",
-	});
-});
+authRouter.post("/v1/auth/signin", signIn);
 
-authRouter.post("/v1/auth/signout", (req, res) => {
-	res.json({
-		message: "This is a signout API",
-	});
-});
+authRouter.post("/v1/auth/signout", signOut);
 
 export default authRouter;
