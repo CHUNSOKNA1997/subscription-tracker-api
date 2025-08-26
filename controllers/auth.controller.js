@@ -105,4 +105,19 @@ export const signIn = async (req, res) => {
 	});
 };
 
-export const signOut = (req, res) => {};
+export const signOut = (req, res) => {
+	const authHeader = req.headers.authorization;
+
+	if (!authHeader) {
+		return res.status(401).json({ message: "No token provided" });
+	}
+
+	const token = authHeader.split(" ")[1];
+
+	if (!token) {
+		return res.status(401).json({ message: "No token provided" });
+	}
+	res.clearCookie("token");
+
+	res.status(200).json({ message: "User signed out successfully" });
+};
