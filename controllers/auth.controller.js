@@ -59,12 +59,50 @@ export const signUp = async (req, res) => {
 	});
 };
 
-export const signIn = (req, res) => {
-	res.json({
-		message: "This is a signin API",
+export const signIn = async (req, res) => {
+	await prisma.$transaction(async (prisma) => {
+		const { email, password } = req.body;
+
+		const user = await prisma.user.findUnique({
+			where: { email },
+		});
+
+		if (!user) {
+			res.status(404).json({
+				message: "User not found",
+			});
+		}
+
+		const isMatch = await bcrypt.compare(password, user.password);
+
+		if (!isMatch) {
+			res.status(400).json({
+				message: "Invalid credentials",
+			});
+		}
+
+		const token = jwt.sign(
+			{
+				id: user.id,
+				email: user.email,
+			},
+			JWT_SECRET,
+			{
+				expiresIn: JWT_EXPIRES_IN,
+			}
+		);
+
+		res.status(200).json({
+			message: "User signed in successfully",
+			user: {
+				id: user.id,
+				uuid: user.uuid,
+				email: user.email,
+				name: user.name,
+			},
+			token,
+		});
 	});
 };
 
-export const signOut = (req, res) => {
-	return { message: "This is a signout API" };
-};
+export const signOut = (req, res) => {};
