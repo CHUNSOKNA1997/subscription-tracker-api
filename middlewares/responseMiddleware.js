@@ -1,4 +1,4 @@
-function responseMiddleware(req, res, next) {
+const responseMiddleware = (req, res, next) => {
 	res.success = (data) => {
 		res.status(200).json({
 			success: true,
@@ -14,6 +14,6 @@ function responseMiddleware(req, res, next) {
 	};
 
 	next();
-}
+};
 
 export { responseMiddleware };
