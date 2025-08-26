@@ -1,22 +1,16 @@
 import { Router } from "express";
+import { getAllUsers, getUserByUuid } from "../controllers/user.controller.js";
 
 const userRouter = Router();
 
-userRouter.get("/v1/users", (req, res) => {
-	res.json({
-		message: "This is a users API",
-	});
-});
+userRouter.get("/v1/users", getAllUsers);
 
-userRouter.get("/v1/users/:id", (req, res) => {
-	res.json({
-		message: "This is a get user specification API",
-	});
-});
+userRouter.get("/v1/users/:uuid", getUserByUuid);
 
 userRouter.post("/v1/users/create", (req, res) => {
-	res.json({
-		message: "This is a create user API",
+	res.status(400).json({
+		message:
+			"This endpoint is not implemented. Please use the /api/v1/auth/signup endpoint to create a user.",
 	});
 });
 
