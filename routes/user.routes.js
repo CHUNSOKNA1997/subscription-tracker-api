@@ -20,8 +20,10 @@ userRouter.get("/v1/users/:uuid", getUser);
 
 userRouter.post("/v1/users/create", createUser);
 
-userRouter.put("/v1/users/:uuid", updateUser);
+userRouter.put("/v1/users/:uuid/update", updateUser);
 
-userRouter.delete("/v1/users/:uuid", deleteUser);
+userRouter.delete("/v1/users/:uuid/delete", deleteUser);
+
+userRouter.post;
 
 export default userRouter;

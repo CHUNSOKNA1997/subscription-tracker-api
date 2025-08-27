@@ -134,6 +134,25 @@ export const updateUser = async (req, res) => {
 				});
 			}
 
+			if (email === user.email && name === user.name) {
+				return res.error({
+					message:
+						"You must provide at least one different value to update",
+				});
+			}
+
+			if (email && email !== user.email) {
+				const emailExists = await prisma.user.findUnique({
+					where: { email },
+				});
+
+				if (emailExists) {
+					return res.error({
+						message: "A user with this email already exists",
+					});
+				}
+			}
+
 			const updatedUser = await prisma.user.update({
 				where: { uuid },
 				data: {
