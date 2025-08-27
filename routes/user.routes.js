@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { getAllUsers, getUserDetails } from "../controllers/user.controller.js";
+import { getUser, getUsers } from "../controllers/user.controller.js";
 
 const userRouter = Router();
 
-userRouter.get("/v1/users", getAllUsers);
+userRouter.get("/v1/users", getUsers);
 
-userRouter.get("/v1/users/:uuid", getUserDetails);
+userRouter.get("/v1/users/:uuid", getUser);
 
 userRouter.post("/v1/users/create", (req, res) => {
 	res.status(400).json({
