@@ -135,15 +135,7 @@ export const signOut = (req, res) => {
 	const token = authHeader.split(" ")[1];
 
 	try {
-		// Verify the token is valid before signing out
 		jwt.verify(token, JWT_SECRET);
-
-		// TODO: Add token to blacklist in database or cache (Redis)
-		// This prevents the token from being used until expiry
-
-		// If using cookies for token storage, clear them
-		// res.clearCookie("token");
-
 		return res.success({
 			message: "User signed out successfully",
 		});

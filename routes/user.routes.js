@@ -4,24 +4,28 @@ import {
 	getUsers,
 	createUser,
 } from "../controllers/user.controller.js";
+import { authenticateToken } from "../middleware/auth.middleware.js";
 
 const userRouter = Router();
 
-userRouter.get("/v1/users", getUsers);
+// Protected routes - require authentication
+userRouter.get("/v1/users", authenticateToken, getUsers);
 
-userRouter.get("/v1/users/:uuid", getUser);
+userRouter.get("/v1/users/:uuid", authenticateToken, getUser);
 
-userRouter.post("/v1/users/create", createUser);
+userRouter.post("/v1/users/create", authenticateToken, createUser);
 
-userRouter.put("/v1/users/:id", (req, res) => {
+userRouter.put("/v1/users/:id", authenticateToken, (req, res) => {
 	res.json({
 		message: "This is an update user API",
+		user: req.user, // Access authenticated user
 	});
 });
 
-userRouter.delete("/v1/users/:id", (req, res) => {
+userRouter.delete("/v1/users/:id", authenticateToken, (req, res) => {
 	res.json({
 		message: "This is a delete user API",
+		user: req.user, // Access authenticated user
 	});
 });
 
