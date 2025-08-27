@@ -111,3 +111,34 @@ export const createUser = async (req, res) => {
 		}
 	});
 };
+
+export const deleteUser = async (req, res) => {
+	try {
+		await prisma.$transaction(async (prisma) => {
+			const { uuid } = req.params;
+
+			const user = await prisma.user.findUnique({
+				where: { uuid },
+			});
+
+			if (!user) {
+				return res.error({
+					message: "User not found",
+				});
+			}
+
+			await prisma.user.delete({
+				where: { uuid },
+			});
+
+			res.success({
+				message: "User deleted successfully",
+			});
+		});
+	} catch (error) {
+		res.error({
+			message: "An error occurred while deleting the user",
+			error: error.message,
+		});
+	}
+};
