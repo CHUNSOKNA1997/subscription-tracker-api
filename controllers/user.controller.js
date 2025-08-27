@@ -3,24 +3,33 @@ import userCollection from "../resources/userCollection.js";
 import userResource from "../resources/userResource.js";
 import bcrypt from "bcryptjs";
 
+/**
+ * Get all users
+ * @param {*} req
+ * @param {*} res
+ */
 export const getUsers = async (req, res) => {
 	try {
 		const users = await prisma.user.findMany();
 
-		res.status(200).json({
-			success: true,
+		res.success({
 			message: "Users retrieved successfully",
 			users: userCollection(users),
 		});
 	} catch (error) {
-		res.status(500).json({
-			success: false,
+		res.error({
 			message: "An error occurred while retrieving users",
 			error: error.message,
 		});
 	}
 };
 
+/**
+ * Get a single user by UUID
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const getUser = async (req, res) => {
 	try {
 		const { uuid } = req.params;
@@ -29,26 +38,28 @@ export const getUser = async (req, res) => {
 		});
 
 		if (!user) {
-			return res.status(404).json({
-				success: false,
+			return res.error({
 				message: "User not found",
 			});
 		}
 
-		res.status(200).json({
-			success: true,
+		res.success({
 			message: "User retrieved successfully",
 			user: userResource(user),
 		});
 	} catch (error) {
-		res.status(500).json({
-			success: false,
+		res.error({
 			message: "An error occurred while retrieving the user",
 			error: error.message,
 		});
 	}
 };
 
+/**
+ * Create a new user
+ * @param {*} req
+ * @param {*} res
+ */
 export const createUser = async (req, res) => {
 	await prisma.$transaction(async (prisma) => {
 		try {
@@ -63,8 +74,6 @@ export const createUser = async (req, res) => {
 					message: "A user with this email already exists",
 				});
 			}
-
-			console.log(password, password_confirmation);
 
 			if (password !== password_confirmation) {
 				return res.error({

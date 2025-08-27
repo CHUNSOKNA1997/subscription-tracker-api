@@ -3,12 +3,17 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../config/env.js";
 
+/**
+ * Sign up a new user
+ * @param {*} req
+ * @param {*} res
+ */
 export const signUp = async (req, res) => {
 	await prisma.$transaction(async (prisma) => {
 		const { email, password, confirmation_password, name } = req.body;
 
 		if (password != confirmation_password) {
-			res.status(400).json({
+			res.error({
 				message: "Password and confirmation password do not match",
 			});
 		}
@@ -18,8 +23,9 @@ export const signUp = async (req, res) => {
 		});
 
 		if (existingUser) {
-			return res.status(409).json({
-				message: "User already exists",
+			return res.error({
+				message: "A user with this email already exists",
+				error: "Conflict",
 			});
 		}
 
@@ -46,8 +52,8 @@ export const signUp = async (req, res) => {
 			}
 		);
 
-		res.status(201).json({
-			message: "User created successfully",
+		res.success({
+			message: "User signed up successfully",
 			user: {
 				id: newUser.id,
 				uuid: newUser.uuid,
@@ -59,6 +65,11 @@ export const signUp = async (req, res) => {
 	});
 };
 
+/**
+ * Sign in an existing user
+ * @param {*} req
+ * @param {*} res
+ */
 export const signIn = async (req, res) => {
 	await prisma.$transaction(async (prisma) => {
 		const { email, password } = req.body;
@@ -76,7 +87,7 @@ export const signIn = async (req, res) => {
 		const isMatch = await bcrypt.compare(password, user.password);
 
 		if (!isMatch) {
-			res.status(400).json({
+			res.error({
 				message: "Invalid credentials",
 			});
 		}
@@ -92,7 +103,7 @@ export const signIn = async (req, res) => {
 			}
 		);
 
-		res.status(200).json({
+		res.success({
 			message: "User signed in successfully",
 			user: {
 				id: user.id,
@@ -105,19 +116,41 @@ export const signIn = async (req, res) => {
 	});
 };
 
+/**
+ * Sign out a user
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const signOut = (req, res) => {
 	const authHeader = req.headers.authorization;
 
-	if (!authHeader) {
-		return res.status(401).json({ message: "No token provided" });
+	if (!authHeader || !authHeader.startsWith("Bearer ")) {
+		return res.error({
+			message: "No token provided",
+			statusCode: 401,
+		});
 	}
 
 	const token = authHeader.split(" ")[1];
 
-	if (!token) {
-		return res.status(401).json({ message: "No token provided" });
-	}
-	res.clearCookie("token");
+	try {
+		// Verify the token is valid before signing out
+		jwt.verify(token, JWT_SECRET);
 
-	res.status(200).json({ message: "User signed out successfully" });
+		// TODO: Add token to blacklist in database or cache (Redis)
+		// This prevents the token from being used until expiry
+
+		// If using cookies for token storage, clear them
+		// res.clearCookie("token");
+
+		return res.success({
+			message: "User signed out successfully",
+		});
+	} catch (error) {
+		return res.error({
+			message: "Invalid token",
+			statusCode: 401,
+		});
+	}
 };
