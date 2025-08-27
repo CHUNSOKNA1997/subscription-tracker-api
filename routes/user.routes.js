@@ -8,24 +8,25 @@ import { authenticateToken } from "../middleware/auth.middleware.js";
 
 const userRouter = Router();
 
-// Protected routes - require authentication
-userRouter.get("/v1/users", authenticateToken, getUsers);
+// Apply authentication to all routes in this router
+userRouter.use(authenticateToken);
 
-userRouter.get("/v1/users/:uuid", authenticateToken, getUser);
+// All routes below are now protected
+userRouter.get("/v1/users", getUsers);
+userRouter.get("/v1/users/:uuid", getUser);
+userRouter.post("/v1/users/create", createUser);
 
-userRouter.post("/v1/users/create", authenticateToken, createUser);
-
-userRouter.put("/v1/users/:id", authenticateToken, (req, res) => {
+userRouter.put("/v1/users/:id", (req, res) => {
 	res.json({
 		message: "This is an update user API",
-		user: req.user, // Access authenticated user
+		user: req.user,
 	});
 });
 
-userRouter.delete("/v1/users/:id", authenticateToken, (req, res) => {
+userRouter.delete("/v1/users/:id", (req, res) => {
 	res.json({
 		message: "This is a delete user API",
-		user: req.user, // Access authenticated user
+		user: req.user,
 	});
 });
 
