@@ -209,3 +209,60 @@ export const deleteUser = async (req, res) => {
 		});
 	}
 };
+
+/**
+ * Change user password
+ * @param {*} req
+ * @param {*} res
+ */
+export const changePassword = async (req, res) => {
+	try {
+		await prisma.$transaction(async (prisma) => {
+			const { current_password, new_password, password_confirmation } =
+				req.body;
+			const user = await prisma.user.findUnique({
+				where: { uuid: req.params.uuid },
+			});
+
+			if (new_password !== password_confirmation) {
+				return res.error({
+					message: "Password and password confirmation do not match",
+				});
+			}
+
+			if (!user) {
+				return res.error({
+					message: "User not found",
+				});
+			}
+
+			const isMatch = await bcrypt.compare(
+				current_password,
+				user.password
+			);
+
+			if (!isMatch) {
+				return res.error({
+					message: "Current password is incorrect",
+				});
+			}
+
+			const salt = await bcrypt.genSalt(10);
+			const hashPassword = await bcrypt.hash(new_password, salt);
+
+			await prisma.user.update({
+				where: { uuid: req.params.uuid },
+				data: { password: hashPassword },
+			});
+
+			res.success({
+				message: "Password changed successfully",
+			});
+		});
+	} catch (error) {
+		res.error({
+			message: "An error occurred while changing the password",
+			error: error.message,
+		});
+	}
+};

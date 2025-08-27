@@ -5,6 +5,7 @@ import {
 	createUser,
 	deleteUser,
 	updateUser,
+	changePassword,
 } from "../controllers/user.controller.js";
 import { authenticateToken } from "../middleware/auth.middleware.js";
 
@@ -24,6 +25,6 @@ userRouter.put("/v1/users/:uuid/update", updateUser);
 
 userRouter.delete("/v1/users/:uuid/delete", deleteUser);
 
-userRouter.post;
+userRouter.post("/v1/users/:uuid/password/change", changePassword);
 
 export default userRouter;
