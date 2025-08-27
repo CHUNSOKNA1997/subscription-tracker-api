@@ -112,6 +112,54 @@ export const createUser = async (req, res) => {
 	});
 };
 
+/**
+ * Update an existing user
+ * @param {*} req
+ * @param {*} res
+ */
+export const updateUser = async (req, res) => {
+	try {
+		await prisma.$transaction(async (prisma) => {
+			const { uuid } = req.params;
+
+			const { name, email } = req.body;
+
+			const user = await prisma.user.findUnique({
+				where: { uuid },
+			});
+
+			if (!user) {
+				return res.error({
+					message: "User not found",
+				});
+			}
+
+			const updatedUser = await prisma.user.update({
+				where: { uuid },
+				data: {
+					name: name || user.name,
+					email: email || user.email,
+				},
+			});
+
+			res.success({
+				message: "User updated successfully",
+				user: userResource(updatedUser),
+			});
+		});
+	} catch (error) {
+		res.error({
+			message: "An error occurred while updating the user",
+			error: error.message,
+		});
+	}
+};
+
+/**
+ * Delete a user by UUID
+ * @param {*} req
+ * @param {*} res
+ */
 export const deleteUser = async (req, res) => {
 	try {
 		await prisma.$transaction(async (prisma) => {
