@@ -3,6 +3,7 @@ import {
 	createSubscription,
 	getAllSubscriptions,
 	getSubscription,
+	getUserSubscriptions,
 } from "../controllers/subscription.controller.js";
 import { authorize } from "../middlewares/auth.middleware.js";
 
@@ -19,11 +20,7 @@ subscriptionRouter.post(
 	createSubscription
 );
 
-subscriptionRouter.get("/v1/subscriptions/user/:id", (req, res) => {
-	res.json({
-		message: `This is a get subscriptions by user ID API for User ID: ${req.params.userId}`,
-	});
-});
+subscriptionRouter.get("/v1/subscriptions/user/:id", getUserSubscriptions);
 
 subscriptionRouter.put("/v1/subscriptions/:id/update", (req, res) => {
 	res.json({

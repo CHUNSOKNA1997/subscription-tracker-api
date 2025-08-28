@@ -118,3 +118,33 @@ export const createSubscription = async (req, res) => {
 		});
 	}
 };
+
+/**
+ * Get subscriptions for a specific user
+ * @param {*} req
+ * @param {*} res
+ */
+export const getUserSubscriptions = async (req, res) => {
+	try {
+		await prisma.$transaction(async (prisma) => {
+			const subscriptions = await prisma.subscription.findMany({
+				where: { userId: parseInt(req.params.id, 10) },
+			});
+
+			if (!subscriptions || subscriptions.length === 0) {
+				return res.error({
+					message: "No subscriptions found for this user",
+				});
+			}
+
+			res.success({
+				subscriptions: subscriptionCollection(subscriptions),
+			});
+		});
+	} catch (error) {
+		res.error({
+			message: "Failed to fetch user subscriptions",
+			error: error.message,
+		});
+	}
+};
