@@ -7,7 +7,7 @@ import {
 	updateUser,
 	changePassword,
 } from "../controllers/user.controller.js";
-import { authenticateToken } from "../middleware/auth.middleware.js";
+import { authenticateToken } from "../middlewares/auth.middleware.js";
 
 const userRouter = Router();
 

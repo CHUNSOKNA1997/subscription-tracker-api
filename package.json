@@ -5,9 +5,11 @@
 	"type": "module",
 	"scripts": {
 		"dev": "nodemon app.js",
-		"start": "node ./bin/www"
+		"start": "node app.js"
 	},
 	"dependencies": {
+		"@arcjet/inspect": "^1.0.0-beta.10",
+		"@arcjet/node": "^1.0.0-beta.10",
 		"@prisma/client": "^6.14.0",
 		"bcryptjs": "^3.0.2",
 		"cookie-parser": "~1.4.4",
