@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { createSubscription } from "../controllers/subscription.controller.js";
+import { authorize } from "../middlewares/auth.middleware.js";
 
 const subscriptionRouter = Router();
 
@@ -14,11 +16,11 @@ subscriptionRouter.get("/v1/subscriptions/:id", (req, res) => {
 	});
 });
 
-subscriptionRouter.post("/v1/subscriptions/create", (req, res) => {
-	res.json({
-		message: "This is a create subscription API",
-	});
-});
+subscriptionRouter.post(
+	"/v1/subscriptions/create",
+	authorize,
+	createSubscription
+);
 
 subscriptionRouter.get("/v1/subscriptions/user/:id", (req, res) => {
 	res.json({
