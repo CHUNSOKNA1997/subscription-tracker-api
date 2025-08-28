@@ -1,36 +1,6 @@
 import prisma from "../prisma/prisma.js";
-
-/**
- * Calculate the renewal date based on the start date and frequency
- * @param {*} startDate
- * @param {*} frequency
- * @returns
- */
-const calculateRenewalDate = (startDate, frequency) => {
-	const date = new Date(startDate);
-
-	switch (frequency) {
-		case "DAILY":
-			date.setDate(date.getDate() + 1);
-			break;
-		case "WEEKLY":
-			date.setDate(date.getDate() + 7);
-			break;
-		case "MONTHLY":
-			date.setMonth(date.getMonth() + 1);
-			break;
-		case "QUARTERLY":
-			date.setMonth(date.getMonth() + 3);
-			break;
-		case "YEARLY":
-			date.setFullYear(date.getFullYear() + 1);
-			break;
-		default:
-			throw new Error("Invalid frequency");
-	}
-
-	return date;
-};
+import subscriptionCollection from "../resources/subscription.collection.js";
+import { calculateRenewalDate } from "../services/calculate.service.js";
 
 /**
  * Get all subscriptions
@@ -42,7 +12,7 @@ export const getAllSubscriptions = async (req, res) => {
 		const subscriptions = await prisma.subscription.findMany();
 
 		res.success({
-			subscriptions,
+			subscriptions: subscriptionCollection(subscriptions),
 		});
 	} catch (error) {
 		res.error({
