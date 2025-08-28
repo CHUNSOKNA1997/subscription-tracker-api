@@ -1,5 +1,6 @@
 import prisma from "../prisma/prisma.js";
 import subscriptionCollection from "../resources/subscription.collection.js";
+import subscriptionResource from "../resources/subscription.resource.js";
 import { calculateRenewalDate } from "../services/calculate.service.js";
 
 /**
@@ -20,6 +21,36 @@ export const getAllSubscriptions = async (req, res) => {
 			error: error.message,
 		});
 	}
+};
+
+/**
+ * Get a single subscription by UUID
+ * @param {*} req
+ * @param {*} res
+ */
+export const getSubscription = async (req, res) => {
+	await prisma.$transaction(async (prisma) => {
+		try {
+			const subscription = await prisma.subscription.findUnique({
+				where: { uuid: req.params.uuid },
+			});
+
+			if (!subscription) {
+				return res.error({
+					message: "Subscription not found",
+				});
+			}
+
+			res.success({
+				subscription: subscriptionResource(subscription),
+			});
+		} catch (error) {
+			res.error({
+				message: "Failed to fetch subscription",
+				error: error.message,
+			});
+		}
+	});
 };
 
 /**
@@ -78,7 +109,7 @@ export const createSubscription = async (req, res) => {
 
 		res.success({
 			message: "Subscription created successfully",
-			subscription: newSubscription,
+			subscription: subscriptionCollection(newSubscription),
 		});
 	} catch (error) {
 		res.error({

@@ -2,18 +2,16 @@ import { Router } from "express";
 import {
 	createSubscription,
 	getAllSubscriptions,
+	getSubscription,
 } from "../controllers/subscription.controller.js";
 import { authorize } from "../middlewares/auth.middleware.js";
 
 const subscriptionRouter = Router();
 
+// Routes
 subscriptionRouter.get("/v1/subscriptions", getAllSubscriptions);
 
-subscriptionRouter.get("/v1/subscriptions/:id", (req, res) => {
-	res.json({
-		message: `This is a subscription detail API for ID: ${req.params.id}`,
-	});
-});
+subscriptionRouter.get("/v1/subscriptions/:uuid", getSubscription);
 
 subscriptionRouter.post(
 	"/v1/subscriptions/create",

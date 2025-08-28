@@ -1,6 +1,7 @@
 const subscriptionResource = (subscription) => {
 	return {
 		id: subscription.id,
+		uuid: subscription.uuid,
 		userId: subscription.userId,
 		name: subscription.name,
 		price: subscription.price,
