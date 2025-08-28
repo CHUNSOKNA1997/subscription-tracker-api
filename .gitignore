@@ -61,3 +61,5 @@ typings/
 .next
 .env.*.local
 /generated/prisma
+
+/generated/prisma

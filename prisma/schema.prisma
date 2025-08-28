@@ -13,6 +13,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Currency {
+  USD
+  EUR
+  KHR
+}
+
+enum Frequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum Category {
+  ENTERTAINMENT
+  PRODUCTIVITY
+  UTILITIES
+  FINANCE
+  EDUCATION
+  HEALTH
+  SHOPPING
+  TRAVEL
+  FOOD
+  OTHER
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  PAYPAL
+  BANK_TRANSFER
+  CRYPTO
+  OTHER
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}
+
 model User {
   id        Int    @id @default(autoincrement()) @unique
   uuid      String @unique @default(uuid())
@@ -31,11 +73,11 @@ model Subscription {
   userId        Int
   name          String
   price         Float
-  currency      String   @default("USD")
-  frequency     String   // monthly, yearly, weekly
-  category      String   // entertainment, productivity, utilities, etc
-  paymentMethod String   // credit_card, paypal, bank_transfer, etc
-  status        String   @default("active") // active, cancelled, expired
+  currency      Currency   @default(USD)
+  frequency     Frequency
+  category      Category
+  paymentMethod PaymentMethod
+  status        SubscriptionStatus   @default(ACTIVE)
   startDate     DateTime @default(now())
   renewalDate   DateTime
   createdAt     DateTime @default(now())
