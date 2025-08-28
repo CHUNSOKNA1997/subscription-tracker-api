@@ -1,4 +1,4 @@
-import userResource from "./userResource.js";
+import userResource from "./user.resource.js";
 
 function userCollection(users) {
 	return users.map((user) => {

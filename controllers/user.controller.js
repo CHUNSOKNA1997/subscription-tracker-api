@@ -1,6 +1,6 @@
 import prisma from "../prisma/prisma.js";
-import userCollection from "../resources/userCollection.js";
-import userResource from "../resources/userResource.js";
+import userCollection from "../resources/user.collection.js";
+import userResource from "../resources/user.resource.js";
 import bcrypt from "bcryptjs";
 
 /**

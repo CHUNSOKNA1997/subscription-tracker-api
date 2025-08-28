@@ -1,14 +1,13 @@
 import { Router } from "express";
-import { createSubscription } from "../controllers/subscription.controller.js";
+import {
+	createSubscription,
+	getAllSubscriptions,
+} from "../controllers/subscription.controller.js";
 import { authorize } from "../middlewares/auth.middleware.js";
 
 const subscriptionRouter = Router();
 
-subscriptionRouter.get("/v1/subscriptions", (req, res) => {
-	res.json({
-		message: "This is a subscriptions API",
-	});
-});
+subscriptionRouter.get("/v1/subscriptions", getAllSubscriptions);
 
 subscriptionRouter.get("/v1/subscriptions/:id", (req, res) => {
 	res.json({

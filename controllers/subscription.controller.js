@@ -1,5 +1,11 @@
 import prisma from "../prisma/prisma.js";
 
+/**
+ * Calculate the renewal date based on the start date and frequency
+ * @param {*} startDate
+ * @param {*} frequency
+ * @returns
+ */
 const calculateRenewalDate = (startDate, frequency) => {
 	const date = new Date(startDate);
 
@@ -26,6 +32,32 @@ const calculateRenewalDate = (startDate, frequency) => {
 	return date;
 };
 
+/**
+ * Get all subscriptions
+ * @param {*} req
+ * @param {*} res
+ */
+export const getAllSubscriptions = async (req, res) => {
+	try {
+		const subscriptions = await prisma.subscription.findMany();
+
+		res.success({
+			subscriptions,
+		});
+	} catch (error) {
+		res.error({
+			message: "Failed to fetch subscriptions",
+			error: error.message,
+		});
+	}
+};
+
+/**
+ * Create a new subscription
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 export const createSubscription = async (req, res) => {
 	try {
 		const {
@@ -70,7 +102,7 @@ export const createSubscription = async (req, res) => {
 				status: status || "ACTIVE",
 				startDate: start,
 				renewalDate,
-				userId: req.user.id, // Assuming user info comes from auth middleware
+				userId: req.user.id,
 			},
 		});
 
