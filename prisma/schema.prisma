@@ -25,17 +25,18 @@ model User {
 }
 
 model Subscription {
-  id            String   @id @default(uuid())
-  user          User     @relation(fields: [userId], references: [uuid])
-  userId        String
+  id            Int      @id @default(autoincrement()) @unique
+  uuid          String   @unique @default(uuid())
+  user          User     @relation(fields: [userId], references: [id])
+  userId        Int
   name          String
   price         Float
-  currency      String
-  frequency     String
-  category      String
-  paymentMethod String
-  status        String
-  startDate     DateTime
+  currency      String   @default("USD")
+  frequency     String   // monthly, yearly, weekly
+  category      String   // entertainment, productivity, utilities, etc
+  paymentMethod String   // credit_card, paypal, bank_transfer, etc
+  status        String   @default("active") // active, cancelled, expired
+  startDate     DateTime @default(now())
   renewalDate   DateTime
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

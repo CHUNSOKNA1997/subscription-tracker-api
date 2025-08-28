@@ -8,7 +8,7 @@ import prisma from "../prisma/prisma.js";
  * @param {*} res
  * @param {*} next
  */
-export const authenticateToken = async (req, res, next) => {
+export const authorize = async (req, res, next) => {
 	const authHeader = req.headers.authorization;
 
 	if (!authHeader || !authHeader.startsWith("Bearer ")) {

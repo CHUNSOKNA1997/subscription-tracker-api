@@ -7,12 +7,12 @@ import {
 	updateUser,
 	changePassword,
 } from "../controllers/user.controller.js";
-import { authenticateToken } from "../middlewares/auth.middleware.js";
+import { authorize } from "../middlewares/auth.middleware.js";
 
 const userRouter = Router();
 
 // Apply authentication to all routes in this router
-userRouter.use(authenticateToken);
+userRouter.use(authorize);
 
 // User routes
 userRouter.get("/v1/users", getUsers);
