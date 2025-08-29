@@ -61,6 +61,11 @@ model User {
   email     String @unique
   name      String
   password  String
+  emailVerified Boolean  @default(false)
+  optCode String?
+  optCodeExpiry DateTime?
+  otpAttempts Int @default(0)
+  latOtpAttempt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   subscriptions Subscription[]
